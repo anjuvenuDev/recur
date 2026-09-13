@@ -8,3 +8,9 @@ artifacts/
 playwright-report/
 test-results/
 *.tsbuildinfo
+
+.recur/
+coverage/
+playwright-report/
+
+.next-e2e/

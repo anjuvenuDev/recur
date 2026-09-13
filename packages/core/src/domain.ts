@@ -1,7 +1,17 @@
 import { z } from "zod";
-export const money = z.number().int().nonnegative();
+export const money = z
+  .number()
+  .int()
+  .nonnegative()
+  .max(Number.MAX_SAFE_INTEGER);
+export const OpaqueIdSchema = z
+  .string()
+  .min(1)
+  .max(160)
+  .regex(/^[A-Za-z0-9_-]+$/);
+export const DigestSchema = z.string().regex(/^[a-f0-9]{64}$/);
 export const RequestSchema = z
-  .object({ customerId: z.string().min(1), chargeId: z.string().min(1) })
+  .object({ customerId: OpaqueIdSchema, chargeId: OpaqueIdSchema })
   .strict();
 export const ReplayRequestSchema = z.object({
   method: z.literal("POST"),
@@ -26,7 +36,8 @@ export const StripeStateSchema = z
       s.refunds.reduce((n, r) => n + r.amount, 0) ===
         s.charge.amount_refunded &&
       s.charge.amount_refunded <= s.charge.amount &&
-      s.refunds.every((r) => r.chargeId === s.charge.id),
+      s.refunds.every((r) => r.chargeId === s.charge.id && r.amount > 0) &&
+      new Set(s.refunds.map((r) => r.id)).size === s.refunds.length,
     "Inconsistent charge/refund state",
   );
 export const FixtureSchema = z.object({
@@ -89,7 +100,8 @@ export const GitSchema = z.object({
   commitSha: z.string(),
   relevantFiles: z.array(z.string()),
   source: z.enum(["GitHub Live", "GitHub Fixture"]),
-  excerpt: z.string(),
+  excerpt: z.string().max(16000),
+  sourceDigest: DigestSchema,
 });
 export const IncidentSchema = z.object({
   id: z.string(),
@@ -152,7 +164,7 @@ export const ReplayResultSchema = z.object({
 });
 export const ComparisonSchema = z.object({
   matched: z.boolean(),
-  fidelityScore: z.number(),
+  fidelityScore: z.number().min(0).max(1),
   criticalMatched: z.boolean(),
   checks: z.array(
     z.object({
@@ -176,6 +188,7 @@ export const AttemptSchema = z.object({
 });
 export const CapsuleSchema = z.object({
   version: z.literal("1"),
+  integrity: z.object({ algorithm: z.literal("sha256"), digest: DigestSchema }),
   id: z.string(),
   incidentId: z.string(),
   createdAt: z.iso.datetime(),
@@ -183,6 +196,7 @@ export const CapsuleSchema = z.object({
     repository: z.string(),
     commitSha: z.string(),
     relevantFiles: z.array(z.string()),
+    sourceDigest: DigestSchema,
   }),
   request: ReplayRequestSchema,
   database: z.object({ fixtures: z.array(FixtureSchema) }),
@@ -192,7 +206,7 @@ export const CapsuleSchema = z.object({
   productionFingerprint: FingerprintSchema,
   reproduction: z.object({
     attemptId: z.string(),
-    fidelityScore: z.number(),
+    fidelityScore: z.number().min(0).max(1),
     matched: z.literal(true),
   }),
   provenance: z.object({

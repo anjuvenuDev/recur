@@ -22,11 +22,9 @@ Open <http://localhost:3000>. If the server is already running, just open the UR
 For command-line validation:
 
 ```bash
-pnpm test
-pnpm evals
-pnpm typecheck
-pnpm lint
-pnpm build
+pnpm validate
+pnpm test:e2e
+pnpm doctor
 ```
 
 ## Optional: enable actual OpenAI specialists
@@ -47,20 +45,20 @@ Live model requests incur your API usage charges. I have not made a live model r
 
 A local Git repository is created. GitHub CLI is not installed and the connected GitHub toolset has no repository-creation operation, so there is no hosted GitHub repository yet.
 
-1. Sign in to GitHub and create an **empty private repository** named `recur`. Do not initialize it with a README, license, or gitignore.
-2. In your terminal, run (replace `YOUR_USERNAME`):
+1. Sign in to GitHub and create an **empty repository (public for a judge-accessible submission)** named `recur`. Do not initialize it with a README, license, or gitignore.
+2. In your terminal, run (replace `Anirudh12345678`):
 
 ```bash
 cd /home/anj/recur
-git remote add origin https://github.com/YOUR_USERNAME/recur.git
+git remote add origin https://github.com/Anirudh12345678/recur.git
 git push -u origin main
 git rev-parse HEAD
 ```
 
-3. Set `GITHUB_OWNER=YOUR_USERNAME`, `GITHUB_REPO=recur`, and `GITHUB_DEMO_COMMIT_SHA` to that full SHA in `.env`.
+3. Set `GITHUB_OWNER=Anirudh12345678`, `GITHUB_REPO=recur`, and `GITHUB_DEMO_COMMIT_SHA` to that full SHA in `.env`.
 4. For a private repo, create a fine-grained token limited to this repository with **Contents: Read-only**. Put it in `GITHUB_TOKEN`. A public repo can use unauthenticated reads subject to GitHub rate limits.
 5. Stop the app. Run `pnpm demo:reset`, `pnpm demo:seed`, then `pnpm dev`.
-6. Confirm **GitHub LIVE** and open the source excerpt. The source file must be `apps/demo-service/src/services/refund-service.ts` at the selected SHA.
+6. Confirm **GitHub LIVE** and open the source excerpt. The source digest must match your local file. The source file must be `apps/demo-service/src/services/refund-service.ts` at the selected SHA.
 
 GitHub is a source-evidence integration. The MVP replays its bundled functions; it does not run arbitrary remote repositories.
 
@@ -80,6 +78,16 @@ Official reference: [LaunchDarkly server-side Node SDK](https://launchdarkly.com
 ## Optional: Arga Stripe digital twin
 
 This is the account-dependent step needed for the judged Arga integration. Local tests do not require it.
+
+The integrated provisioning route is now available:
+
+1. Obtain your Arga API key from your account and set `ARGA_API_KEY` in `.env`.
+2. Run `pnpm arga:provision`. This requests one public Stripe twin for 60 minutes, polls status, and saves the private response to `.recur/twin.json` with restricted permissions.
+3. Set `ARGA_ENABLED=true`. The runtime reads the saved endpoint and expiry. Leave `ARGA_STRIPE_BASE_URL` empty when using the saved configuration.
+4. Run `pnpm demo:seed:arga`, then reset/reseed and restart the application.
+5. Inspect `pnpm arga:status`; use `pnpm arga:teardown` when finished. Never repeatedly provision after a timeout without checking the saved run.
+
+The CLI/manual alternative remains available:
 
 1. The Arga CLI is already installed at `~/.local/bin/arga` in this workspace. Complete account login and twin creation in your terminal:
 
@@ -115,4 +123,30 @@ Official reference: [Arga twins quickstart](https://docs.argalabs.com/features/t
 
 The local system and adapter contracts are testable now. OpenAI model access, GitHub authentication, LaunchDarkly evaluation, and an actual Arga twin require your accounts. After adding credentials, run the steps above one integration at a time. Do not present fixture badges as live integration proof.
 
-Deployment is intentionally local for this first build. SQLite persistence and spawned Vitest runs need a persistent Node process; publishing the dashboard on Vercel would require adapting those two parts and adding access control.
+## Userlens outcome events
+
+1. Create/sign in to a Userlens project and obtain its write code from the project integration settings.
+2. Put it in `USERLENS_WRITE_CODE` in `.env`; restart the app.
+3. Reproduce a fresh incident and verify its fix. Open **Integration delivery receipts** under State Safety.
+4. Confirm Userlens says **DELIVERED**, then inspect the synthetic account `recur-synthetic-demo-account` in Userlens for the track events.
+5. A rejected or unknown delivery is not a success; inspect the project/code and provider before explicitly running another demo. No automatic delivery retries occur.
+
+## Lemma agent traces
+
+1. Create/sign in to a Lemma project. Obtain its project ID and API key.
+2. Set `LEMMA_PROJECT_ID` and `LEMMA_API_KEY` in `.env`, along with the OpenAI variables for actual model runs. Restart.
+3. Reproduce and verify. Inspect the delivery receipt and open Lemma to inspect coordinator/specialist traces tagged with the job and incident IDs.
+4. Fixture-only jobs produce no model spans. “NO SPANS” is different from successful delivery.
+
+## Final live acceptance
+
+After OpenAI, GitHub, LaunchDarkly, and Arga are configured:
+
+```bash
+pnpm doctor
+pnpm test:live
+```
+
+This uses a separate artifact database, captures live GitHub/flag evidence, reconstructs in Arga, runs the specialists, verifies the fix, executes the generated regression, and writes `artifacts/live-acceptance.json`. It refuses incomplete core configuration before making requests. Optional Userlens/Lemma delivery receipts remain separate checks. API usage and Arga provisioning use your accounts.
+
+For production startup and container instructions, see [operations](ARCHITECTURE.md#operations). Persistent Node and filesystem storage are required; access control and a durable worker are now implemented. Serverless deployment would still require architectural changes.

@@ -1,0 +1,13 @@
+node_modules
+**/node_modules
+**/.next*
+.git
+.env
+.env.*
+!.env.example
+.recur
+*.db*
+artifacts
+coverage
+test-results
+playwright-report

@@ -1,3 +1,4 @@
+import { assertSourceVersion } from "../../integrations/src/source-version";
 import { randomUUID } from "node:crypto";
 import { executePlan } from "../../../apps/demo-service/src/replay";
 import { heroPlan } from "../../core/src/fixtures";
@@ -10,6 +11,7 @@ export async function seedIncident(store: Store, local = false) {
   const existing = await store.get("incidents", INCIDENT_ID);
   if (existing) return IncidentSchema.parse(existing);
   const git = await gitEvidence(local);
+  await assertSourceVersion(git.sourceDigest);
   const execution = await executePlan(heroPlan(), {
     incidentId: INCIDENT_ID,
     local,

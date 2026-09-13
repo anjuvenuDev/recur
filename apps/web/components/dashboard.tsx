@@ -17,6 +17,8 @@ type Detail = {
   capsules: Capsule[];
   events: RunEvent[];
   busy: boolean;
+  verifications?: Verification[];
+  receipts?: { id: string; provider: string; status: string; detail: string }[];
 };
 type Verification = {
   passed: boolean;
@@ -73,6 +75,7 @@ export default function Dashboard({
     }
   };
   const capsule = data?.capsules.at(-1);
+  const displayedVerification = verification ?? data?.verifications?.at(-1);
   const busy = !!working || !!data?.busy;
   const incident = data?.incident;
   const latest = data?.attempts.at(-1);
@@ -226,7 +229,11 @@ export default function Dashboard({
                 <div className="field">
                   <label>CODE COMMIT · {incident?.git.source}</label>
                   <code className="wrap">{incident?.git.commitSha}</code>
-                  <small>Replay uses the bundled buggy implementation.</small>
+                  <small>Replay requires the captured source hash.</small>
+                </div>
+                <div className="field">
+                  <label>SOURCE SHA-256</label>
+                  <code className="wrap">{incident?.git.sourceDigest}</code>
                 </div>
                 <div className="field">
                   <label>CAPTURED AT</label>
@@ -474,32 +481,37 @@ export default function Dashboard({
                   </span>
                 )}
               </div>
-              {verification && (
+              {displayedVerification && (
                 <div
                   className={
-                    verification.passed && verification.regression.valid
+                    displayedVerification.passed &&
+                    displayedVerification.regression.valid
                       ? "result-success"
                       : "error"
                   }
                 >
                   <h3>
-                    {verification.passed && verification.regression.valid
+                    {displayedVerification.passed &&
+                    displayedVerification.regression.valid
                       ? "FIX VERIFIED"
                       : "VERIFICATION FAILED"}
                   </h3>
                   <p>
-                    HTTP {verification.result.status} · Original fingerprint{" "}
-                    {verification.originalFailureGone
+                    HTTP {displayedVerification.result.status} · Original
+                    fingerprint{" "}
+                    {displayedVerification.originalFailureGone
                       ? "absent"
                       : "still present"}
                   </p>
                   <p>
                     Generated test: buggy{" "}
-                    {verification.regression.buggyFails
+                    {displayedVerification.regression.buggyFails
                       ? "FAIL (expected)"
                       : "unexpected PASS"}{" "}
                     / fixed{" "}
-                    {verification.regression.fixedPasses ? "PASS" : "FAIL"}
+                    {displayedVerification.regression.fixedPasses
+                      ? "PASS"
+                      : "FAIL"}
                   </p>
                 </div>
               )}
@@ -540,6 +552,19 @@ export default function Dashboard({
                     : "Local memory"}
                 </b>
               </div>
+              {data.receipts?.length ? (
+                <details>
+                  <summary>Integration delivery receipts</summary>
+                  {data.receipts.map((r) => (
+                    <div key={r.id} className="field">
+                      <strong>
+                        {r.provider} · {r.status}
+                      </strong>
+                      <small>{r.detail}</small>
+                    </div>
+                  ))}
+                </details>
+              ) : null}
               <p className="small">
                 No production cloning. Every replay receives fresh state.
                 Captured flags are frozen for reproduction.

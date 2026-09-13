@@ -26,7 +26,7 @@ export default function Page() {
     setBusy(true);
     setError("");
     try {
-      setReport(await api<Report>("evals"));
+      setReport(await api<Report>("evals", {}));
     } catch (e) {
       setError((e as Error).message);
     } finally {

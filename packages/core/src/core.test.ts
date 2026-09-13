@@ -117,3 +117,21 @@ it("freezes reconstructed feature flags", async () => {
     source: "LaunchDarkly Fixture",
   });
 });
+
+it("handles concurrent refund retries without overspending or duplicate effects", async () => {
+  const stripe = new FixtureStripeAdapter(heroPlan().stripeState);
+  const input = {
+    chargeId: "ch_demo_001",
+    amount: 6000,
+    idempotencyKey: "concurrent",
+  };
+  const results = await Promise.all([
+    stripe.createRefund(input),
+    stripe.createRefund(input),
+  ]);
+  expect(results[0]).toEqual(results[1]);
+  expect(await stripe.listRefundsForCharge(input.chargeId)).toHaveLength(2);
+  await expect(
+    stripe.createRefund({ ...input, idempotencyKey: "new" }),
+  ).rejects.toThrow("amount");
+});

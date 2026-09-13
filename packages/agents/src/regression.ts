@@ -1,3 +1,6 @@
+import { randomUUID } from "node:crypto";
+import { assertSourceVersion } from "../../integrations/src/source-version";
+import { verifyCapsule } from "../../core/src/integrity";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { execFile } from "node:child_process";
@@ -26,6 +29,8 @@ it('refunds remaining balance after a partial refund with refunds_v2 enabled', a
 `;
 }
 export async function generateRegression(capsule: Capsule) {
+  verifyCapsule(capsule);
+  await assertSourceVersion(capsule.code.sourceDigest);
   const template = regressionTemplate(capsule);
   const authored = await authorRegression(template);
   // The author may explain, but executable text must match the bounded template before running.
@@ -46,7 +51,10 @@ export async function generateRegression(capsule: Capsule) {
   const file = resolve(dir, `${capsule.id}.test.ts`);
   await writeFile(file, authored.code);
   const run = async (mode: string) => {
-    const reportFile = resolve(dir, `${capsule.id}-${mode}.json`);
+    const reportFile = resolve(
+      dir,
+      `${capsule.id}-${mode}-${randomUUID()}.json`,
+    );
     let passed = false;
     let output = "";
     try {
@@ -64,14 +72,8 @@ export async function generateRegression(capsule: Capsule) {
         {
           cwd: root,
           env: {
-            ...Object.fromEntries(
-              Object.entries(process.env).filter(
-                ([key]) =>
-                  !key.startsWith("VITEST") &&
-                  !key.startsWith("VITE_") &&
-                  key !== "NODE_OPTIONS",
-              ),
-            ),
+            PATH: process.env.PATH,
+            RECUR_ROOT: root,
             NODE_ENV: "test",
             RECUR_REGRESSION_MODE: mode,
             OPENAI_API_KEY: "",
@@ -89,13 +91,27 @@ export async function generateRegression(capsule: Capsule) {
     try {
       output = await readFile(reportFile, "utf8");
     } catch {}
-    return { passed, output };
+    let reportValid = false;
+    try {
+      const report = JSON.parse(output);
+      reportValid =
+        report.numTotalTests === 1 &&
+        (report.numRuntimeErrorTestSuites ?? 0) === 0 &&
+        report.testResults?.length === 1 &&
+        report.testResults[0].assertionResults?.length === 1 &&
+        (mode === "fixed"
+          ? report.numPassedTests === 1
+          : report.numFailedTests === 1);
+    } catch {}
+    return { passed, output, reportValid };
   };
   const buggy = await run("buggy");
   const fixed = await run("fixed");
   const valid =
     !buggy.passed &&
     fixed.passed &&
+    buggy.reportValid &&
+    fixed.reportValid &&
     buggy.output.includes("expected 500 to be 200");
   return {
     code: authored.code,
@@ -108,6 +124,8 @@ export async function generateRegression(capsule: Capsule) {
   };
 }
 export async function verifyFix(capsule: Capsule) {
+  verifyCapsule(capsule);
+  await assertSourceVersion(capsule.code.sourceDigest);
   const { result, stripeMode } = await executePlan(
     capsulePlan(capsule, "fixed"),
   );
@@ -129,6 +147,8 @@ export async function verifyFix(capsule: Capsule) {
   };
 }
 export async function ablate(capsule: Capsule) {
+  verifyCapsule(capsule);
+  await assertSourceVersion(capsule.code.sourceDigest);
   return Promise.all(
     ["flag", "prior refund", "code", "DB refund request"].map(
       async (component) => {

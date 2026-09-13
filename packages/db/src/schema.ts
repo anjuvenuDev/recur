@@ -12,7 +12,11 @@ export const capsules = entity("capsules");
 export const run_events = entity("run_events");
 export const demo_customers = entity("demo_customers");
 export const demo_refund_requests = entity("demo_refund_requests");
+export const verifications = entity("verifications");
+export const integration_receipts = entity("integration_receipts");
 export const tables = {
+  verifications,
+  integration_receipts,
   incidents,
   evidence,
   attempts,

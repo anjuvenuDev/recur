@@ -4,7 +4,14 @@
     "apps/**/*.ts",
     "apps/**/*.tsx",
     "packages/**/*.ts",
-    "scripts/**/*.ts"
+    "scripts/**/*.ts",
+    "tests/**/*.ts",
+    "playwright.config.ts"
   ],
-  "exclude": ["node_modules", "apps/web/.next", "artifacts"]
+  "exclude": [
+    "node_modules",
+    "apps/web/.next",
+    "artifacts",
+    "apps/web/.next-e2e"
+  ]
 }

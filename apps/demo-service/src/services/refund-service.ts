@@ -83,6 +83,16 @@ export async function refundRemaining(input: {
       stripe.listRefundsForCharge(request.chargeId),
     );
     trace.observe("stripe_read", "stripe", "stripe.refund.list", refunds);
+    if (
+      refunds.reduce((sum, r) => sum + r.amount, 0) !==
+        charge.amount_refunded ||
+      new Set(refunds.map((r) => r.id)).size !== refunds.length
+    ) {
+      throw new BusinessError(
+        "InconsistentProviderStateError",
+        "Charge and refund observations disagree",
+      );
+    }
     const remaining = await span(
       "refund.calculate_remaining",
       async () => charge.amount - charge.amount_refunded,

@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 import { z } from "zod";
+import { sourceDigest } from "../../core/src/integrity";
 import { GitSchema } from "../../core/src/domain";
 const sourcePath = "apps/demo-service/src/services/refund-service.ts";
 export class GitHubAdapter {
@@ -51,12 +52,15 @@ export async function gitEvidence(local = false) {
   ) {
     const api = new GitHubAdapter();
     const c = await api.getCommit(process.env.GITHUB_DEMO_COMMIT_SHA);
+    const source = await api.getFileAtRef(sourcePath, c.sha);
+    const excerpt = source.slice(0, 12000);
     return GitSchema.parse({
+      sourceDigest: sourceDigest(source),
       repository: `${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}`,
       commitSha: c.sha,
       relevantFiles: [sourcePath],
       source: "GitHub Live",
-      excerpt: await api.getRelevantSource({ sha: c.sha, file: sourcePath }),
+      excerpt,
     });
   }
   let sha = "uncommitted-local-source";
@@ -68,14 +72,14 @@ export async function gitEvidence(local = false) {
       .toString()
       .trim();
   } catch {}
+  const source = await readFile(resolve(root, sourcePath), "utf8");
+  const excerpt = source.slice(0, 12000);
   return GitSchema.parse({
+    sourceDigest: sourceDigest(source),
     repository: "local/recur",
     commitSha: sha,
     relevantFiles: [sourcePath],
     source: "GitHub Fixture",
-    excerpt: (await readFile(resolve(root, sourcePath), "utf8")).slice(
-      0,
-      12000,
-    ),
+    excerpt,
   });
 }

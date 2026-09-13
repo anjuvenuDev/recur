@@ -32,11 +32,34 @@ export async function api<T>(path: string, body?: unknown): Promise<T> {
       ? { cache: "no-store" }
       : {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Idempotency-Key": crypto.randomUUID(),
+          },
           body: JSON.stringify(body),
         },
   );
   const data = await response.json();
   if (!response.ok) throw new Error(data.error ?? "Request failed");
+  if (response.status === 202 && data.jobId) {
+    const deadline = Date.now() + 240000;
+    while (Date.now() < deadline) {
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      const poll = await fetch(`/api/jobs/${data.jobId}`, {
+        cache: "no-store",
+      });
+      if (!poll.ok)
+        throw new Error(
+          "Cannot read job status. Refresh to inspect the persisted run.",
+        );
+      const job = await poll.json();
+      if (job.status === "succeeded") return job.result as T;
+      if (["failed", "interrupted"].includes(job.status))
+        throw new Error(job.error ?? "Job did not complete");
+    }
+    throw new Error(
+      "Job is still pending. Ensure pnpm worker is running, then refresh.",
+    );
+  }
   return data as T;
 }

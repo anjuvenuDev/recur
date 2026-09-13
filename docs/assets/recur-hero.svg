@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420" role="img" aria-labelledby="title desc">
+<title id="title">Recur — make the failure executable</title><desc id="desc">Captured evidence becomes reconstructed state, a verified failure, and a regression test. An initial 200 response mismatches; a reconstructed 500 matches; the fixed service refunds 60 dollars.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101d28"/><stop offset="1" stop-color="#102e2a"/></linearGradient></defs>
+<rect width="1280" height="420" rx="22" fill="url(#bg)"/>
+<g font-family="Arial, sans-serif"><text x="58" y="73" font-size="27" fill="#68e5bc" font-weight="700">↻ recur</text><text x="58" y="141" font-size="48" fill="#f4faf8" font-weight="700">Make the failure executable.</text><text x="60" y="183" font-size="20" fill="#b0c6c1">Capture the conditions. Recreate the bug. Prove the fix.</text>
+<g transform="translate(58 229)"><rect width="266" height="119" rx="12" fill="#20353b" stroke="#49616a"/><text x="22" y="31" fill="#adc2c7" font-size="13">01 / FIRST REPLAY</text><text x="22" y="66" fill="#f4b383" font-size="27" font-weight="700">HTTP 200 ≠ target</text><text x="22" y="95" fill="#d6e1de" font-size="15">Missing flag → reject the match</text></g>
+<text x="341" y="296" fill="#76a197" font-size="28">→</text>
+<g transform="translate(382 229)"><rect width="356" height="119" rx="12" fill="#19493b" stroke="#51c29b"/><text x="22" y="31" fill="#9de2c7" font-size="13">02 / RECONSTRUCTED STATE</text><text x="22" y="66" fill="#a8f4d7" font-size="27" font-weight="700">HTTP 500 = exact failure</text><text x="22" y="95" fill="#d6e1de" font-size="15">Code + DB + Stripe + flag → capsule</text></g>
+<text x="756" y="296" fill="#76a197" font-size="28">→</text>
+<g transform="translate(797 229)"><rect width="425" height="119" rx="12" fill="#20353b" stroke="#49616a"/><text x="22" y="31" fill="#adc2c7" font-size="13">03 / FIX PROOF</text><text x="22" y="66" fill="#f4faf8" font-size="27" font-weight="700">One $60 refund. Test passes.</text><text x="22" y="95" fill="#d6e1de" font-size="15">Same test: buggy FAIL / fixed PASS</text></g>
+<text x="60" y="386" fill="#93b6ac" font-size="13" letter-spacing="1.5">EVIDENCE-DRIVEN AGENTS · DETERMINISTIC VERDICTS · SAFE EXTERNAL STATE</text></g></svg>

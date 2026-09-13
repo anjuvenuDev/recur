@@ -30,6 +30,6 @@ app.post("/api/refunds/remaining", async (req, res) => {
     res.status(502).json({ error: "Demo environment unavailable" });
   }
 });
-app.listen(4001, "127.0.0.1", () =>
+app.listen(Number(process.env.DEMO_PORT ?? 4001), "127.0.0.1", () =>
   console.log("Demo service: http://localhost:4001"),
 );

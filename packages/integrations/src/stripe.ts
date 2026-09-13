@@ -1,3 +1,6 @@
+import { readFileSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
+import { assertTwinNotExpired } from "./arga";
 import Stripe from "stripe";
 import {
   ChargeSchema,
@@ -43,7 +46,9 @@ export class FixtureStripeAdapter implements StripeAdapter {
         throw new Error("Idempotency conflict");
       return old;
     }
-    const charge = await this.retrieveCharge(input.chargeId);
+    if (input.chargeId !== this.state.charge.id)
+      throw new Error("Charge not found");
+    const charge = this.state.charge;
     if (
       !Number.isSafeInteger(input.amount) ||
       input.amount <= 0 ||
@@ -85,7 +90,18 @@ export function validateTwinUrl(base: string, key: string) {
   return url;
 }
 export function twinClient() {
-  const key = process.env.STRIPE_SECRET_KEY ?? "sk_test_recur_twin";
+  const file = resolve(
+    process.env.RECUR_ROOT ?? process.cwd(),
+    ".recur/twin.json",
+  );
+  if (existsSync(file)) {
+    const twin = JSON.parse(readFileSync(file, "utf8"));
+    process.env.ARGA_STRIPE_BASE_URL ||= twin.twins?.stripe?.base_url;
+    process.env.ARGA_RUN_ID ||= twin.run_id;
+    process.env.ARGA_EXPIRES_AT ||= twin.expires_at;
+  }
+  assertTwinNotExpired();
+  const key = process.env.STRIPE_SECRET_KEY || "sk_test_recur_twin";
   const url = validateTwinUrl(process.env.ARGA_STRIPE_BASE_URL ?? "", key);
   return new Stripe(key, {
     host: url.hostname,

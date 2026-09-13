@@ -1,3 +1,5 @@
+import { sealCapsule } from "../../core/src/integrity";
+import { assertSourceVersion } from "../../integrations/src/source-version";
 import { randomUUID } from "node:crypto";
 import {
   AnalysisSchema,
@@ -52,6 +54,7 @@ export async function reproduce(
     phase = transition(phase, next);
   };
   try {
+    await assertSourceVersion(incident.git.sourceDigest);
     incident.status = "reproducing";
     await store.put("incidents", incident.id, incident.id, incident);
     move("ANALYZING");
@@ -143,7 +146,7 @@ export async function reproduce(
         comparison,
       );
       if (comparison.matched) {
-        const capsule = CapsuleSchema.parse({
+        const capsule = sealCapsule({
           version: "1",
           id: `cap_${runId}`,
           incidentId,

@@ -1,9 +1,10 @@
+import { verifyCapsule } from "./integrity";
 import { CapsuleSchema, PlanSchema, type Capsule } from "./domain";
 export function capsulePlan(
   raw: Capsule,
   codeMode: "buggy" | "fixed" = "buggy",
 ) {
-  const c = CapsuleSchema.parse(raw);
+  const c = verifyCapsule(raw);
   return PlanSchema.parse({
     dbFixtures: c.database.fixtures,
     stripeState: c.externalState.stripe,

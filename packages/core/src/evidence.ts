@@ -1,3 +1,4 @@
+import { canonicalJson } from "./integrity";
 import type { Evidence } from "./domain";
 export function sanitize(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(sanitize);
@@ -24,7 +25,7 @@ export function sanitize(value: unknown): unknown {
 export function deduplicate(records: Evidence[]) {
   const seen = new Set<string>();
   return records.filter((e) => {
-    const key = JSON.stringify([e.kind, e.source, e.operation, e.payload]);
+    const key = canonicalJson([e.kind, e.source, e.operation, e.payload]);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;

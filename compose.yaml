@@ -1,0 +1,17 @@
+services:
+  recur:
+    build: .
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      RECUR_ACCESS_TOKEN: ${RECUR_ACCESS_TOKEN:?Set a random access token of at least 24 characters}
+      DATABASE_URL: file:/app/data/recur.db
+    volumes:
+      - recur-data:/app/data
+      - recur-artifacts:/app/artifacts
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 20s
+volumes:
+  recur-data:
+  recur-artifacts:

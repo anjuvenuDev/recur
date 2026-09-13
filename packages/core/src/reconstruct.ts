@@ -7,13 +7,19 @@ import {
   type Evidence,
   type Incident,
 } from "./domain";
+import { canonicalJson } from "./integrity";
 import { deduplicate } from "./evidence";
 export function reconstruct(incident: Incident, records: Evidence[]) {
+  if (records.some((e) => e.incidentId !== incident.id))
+    throw new Error("Evidence belongs to a different incident");
   const evidence = deduplicate(records);
   const get = (operation: string) => {
-    const e = evidence.find(
+    const candidates = evidence.filter(
       (e) => e.operation === operation && e.kind !== "otel_span",
     );
+    if (new Set(candidates.map((e) => canonicalJson(e.payload))).size > 1)
+      throw new Error(`Conflicting evidence: ${operation}`);
+    const e = candidates[0];
     if (!e) throw new Error(`Insufficient evidence: ${operation}`);
     return e.payload;
   };
