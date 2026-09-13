@@ -53,7 +53,7 @@ Replay uses local simulation and checks capsule integrity and the service source
 
 **[▶ Watch the captioned 2-minute demo](docs/demo/recur-demo.mp4)** · [Narration and recording instructions](docs/DEMO.md)
 
-Recorded from the production build using fixture AI and simulated Stripe. The footage shows real service execution and real regression results; it is not a live-provider claim.
+Screen recording of the production build in local demo mode. It shows actual service execution and regression results. Stripe is simulated in this recording; live integration acceptance is documented separately.
 
 | Time      | Action                                         | What the judge can verify                                                                    |
 | --------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------- |

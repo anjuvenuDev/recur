@@ -1,6 +1,6 @@
 # Two-minute demo
 
-The recording demonstrates actual local execution with **fixture AI and simulated Stripe**, clearly labeled in the application. It is a reproducible walkthrough, not live integration acceptance.
+The video is a screen recording of the running application in **local demo mode**, with simulated Stripe state. It demonstrates actual service execution and regression validation. Live integration acceptance is a separate check.
 
 ## Narration
 
@@ -28,6 +28,6 @@ Install `agent-browser` and Chromium using that tool's setup instructions, and h
 AGENT_BROWSER_BIN=agent-browser node --import tsx scripts/record-demo.ts
 ```
 
-Raw footage and timing markers are written to `artifacts/demo/`. The script resets the synthetic incident first. Run it against your local workspace, not a shared incident collection. No voice is synthesized; the narration above is ready for your own recording.
+Raw footage and timing markers are written to `artifacts/demo/`. The script resets the synthetic incident first. Run it against your local workspace, not a shared incident collection. The narration above is ready for your own recording.
 
 Before the final hackathon take, configure the core live integrations and run `pnpm test:live`. Inspect the Arga objects and optional Userlens/Lemma receipts. Re-record with genuine connected badges, then upload the video to an accessible host and replace the README demo link with that share URL. Test the share link in a signed-out browser. The checked-in local demo remains a fallback that judges can reproduce without accounts.
