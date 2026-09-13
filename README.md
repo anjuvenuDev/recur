@@ -51,11 +51,11 @@ Replay uses local simulation and checks capsule integrity and the service source
 
 ## The two-minute demo
 
-**[▶ Watch the captioned 2-minute demo](docs/demo/recur-demo.mp4)** · [Narration and recording instructions](docs/DEMO.md)
+**[▶ Watch the captioned 2-minute demo](docs/demo/recur-demo.mp4)** 
 
 Screen recording of the production build in local demo mode. It shows actual service execution and regression results. Stripe is simulated in this recording; live integration acceptance is documented separately.
 
-| Time      | Action                                         | What the judge can verify                                                                    |
+| Time      | Action                                         | Verification                                                                  |
 | --------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | 0:00–0:15 | Show the incident and five causal observations | A real captured stack, flag evaluation, DB fixtures, charge, and prior refund                |
 | 0:15–0:40 | Reproduce with teaching mode enabled           | Attempt 1 returns 200 and is rejected; restoring the observed flag reproduces the target 500 |
@@ -108,7 +108,7 @@ The worker runs each job in a separate process. Only deterministic application c
 
 </details>
 
-## Meaningful multi-app integration
+## Meaningful multi-app integration: Integrated Apps
 
 | Product                | Role in the solution                                                                     | Local fallback                        |
 | ---------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------- |
@@ -119,7 +119,7 @@ The worker runs each job in a separate process. Only deterministic application c
 | **Userlens**           | Send verified reproduction/fix outcomes for a synthetic account, with delivery receipts  | Recorded “NOT CONNECTED” receipt      |
 | **Lemma**              | Export Agents SDK traces for reasoning and tool inspection, with transport receipts      | Recorded “NOT CONNECTED” receipt      |
 
-Arga and Userlens are represented on the [event's judging panel](https://multiappagenthackathon.com/judges/); Lemma provides relevant agent observability. The integration choices serve reconstruction, outcome measurement, and debugging. [Product rationale and official contracts →](docs/JUDGE_FIT.md)
+The integration choices serve reconstruction, outcome measurement, and debugging.
 
 ## Operate it
 
