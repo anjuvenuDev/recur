@@ -1,0 +1,8 @@
+node_modules
+.next
+artifacts
+BUILD_SPEC.md
+pnpm-lock.yaml
+apps/web/AGENTS.md
+apps/web/CLAUDE.md
+apps/web/next-env.d.ts

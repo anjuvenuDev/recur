@@ -1,0 +1,5 @@
+{
+  "name": "@recur/telemetry",
+  "private": true,
+  "type": "module"
+}

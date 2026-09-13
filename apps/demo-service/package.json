@@ -1,0 +1,5 @@
+{
+  "name": "@recur/demo-service",
+  "private": true,
+  "type": "module"
+}
