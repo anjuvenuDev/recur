@@ -1,7 +1,7 @@
 <p align="center"><img src="docs/assets/recur-hero.svg" alt="Recur: captured conditions become a reproducible failure and a proven fix" width="100%" /></p>
 
 <p align="center"><strong>A production error is a symptom. Recur turns its missing conditions into an executable test case.</strong></p>
-<p align="center"><a href="#run-the-agent">Run the agent</a> · <a href="#the-two-minute-demo">Demo</a> · <a href="#proof-before-success">Reliability</a> · <a href="docs/YOUR_SETUP.md">Connect your accounts</a> · <a href="docs/ARCHITECTURE.md">Architecture</a></p>
+<p align="center"><a href="#run-the-agent">Run the agent</a> · <a href="docs/demo/recur-demo.mp4">Watch the 2-minute demo</a> · <a href="#proof-before-success">Reliability</a> · <a href="docs/YOUR_SETUP.md">Connect your accounts</a> · <a href="docs/ARCHITECTURE.md">Architecture</a></p>
 
 ## The problem
 
@@ -24,7 +24,7 @@ pnpm demo:seed
 pnpm dev
 ```
 
-Open **http://localhost:3000** and click **Reproduce failure**. `pnpm dev` starts the dashboard, durable worker, and demonstration service together. Stop them with Ctrl+C. `pnpm doctor` reports database, worker, and integration configuration without printing secrets.
+Open **http://localhost:3000** and click **Reproduce failure**. `pnpm dev` starts the dashboard, durable worker, and demonstration service together. Stop them with Ctrl+C. `pnpm run doctor` reports database, worker, and integration configuration without printing secrets.
 
 Local mode uses deterministic specialist fixtures and simulated Stripe state. Set `OPENAI_API_KEY` and `OPENAI_MODEL` in `.env`, then restart, to run the actual **OpenAI Agents SDK coordinator and specialists**. The timeline and capsule identify which mode actually ran. See [account setup](docs/YOUR_SETUP.md) for GitHub, LaunchDarkly, Arga, Userlens, and Lemma.
 
@@ -50,6 +50,10 @@ pnpm capsule:replay ./capsule.json fixed
 Replay uses local simulation and checks capsule integrity and the service source hash. Use the corresponding source checkout. The capsule does not execute arbitrary downloaded code.
 
 ## The two-minute demo
+
+**[▶ Watch the captioned 2-minute demo](docs/demo/recur-demo.mp4)** · [Narration and recording instructions](docs/DEMO.md)
+
+Recorded from the production build using fixture AI and simulated Stripe. The footage shows real service execution and real regression results; it is not a live-provider claim.
 
 | Time      | Action                                         | What the judge can verify                                                                    |
 | --------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------- |
@@ -93,25 +97,16 @@ The ten named scenarios include missing evidence, duplicate evidence, flag off, 
 
 ## Architecture
 
-```mermaid
-flowchart LR
-  A[Captured failure + sanitized evidence] --> Q[Durable SQLite job]
-  Q --> C[Agents SDK coordinator]
-  C --> E[Evidence analyst]
-  C --> S[State reconstructor]
-  E --> P[Validated reconstruction plan]
-  S --> P
-  P --> R[Isolated DB + Stripe twin + frozen flag]
-  R --> X[Actual service execution + OTel]
-  X --> F{Deterministic fingerprint}
-  F -->|Mismatch, max 3| S
-  F -->|Match| K[Reproduction Capsule]
-  K --> T[Regression author + trusted compiler]
-  T --> V[Buggy fails / fixed passes]
-  V --> U[Userlens outcome + Lemma trace receipts]
-```
+![Recur architecture: evidence, bounded execution, and inspectable proof](docs/assets/architecture.svg)
 
 The worker runs each job in a separate process. Only deterministic application code provisions external state and evaluates results. The model proposes evidence and assertions; it cannot set the verdict. [Detailed design and operational limits →](docs/ARCHITECTURE.md)
+
+<details>
+<summary>View the verified workspace screenshot</summary>
+
+![Actual local workspace after successful fix verification](docs/assets/workspace.png)
+
+</details>
 
 ## Meaningful multi-app integration
 

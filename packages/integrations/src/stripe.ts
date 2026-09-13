@@ -44,7 +44,7 @@ export class FixtureStripeAdapter implements StripeAdapter {
     if (old) {
       if (old.amount !== input.amount || old.chargeId !== input.chargeId)
         throw new Error("Idempotency conflict");
-      return old;
+      return structuredClone(old);
     }
     if (input.chargeId !== this.state.charge.id)
       throw new Error("Charge not found");
@@ -63,7 +63,7 @@ export class FixtureStripeAdapter implements StripeAdapter {
     this.state.refunds.push(refund);
     this.state.charge.amount_refunded += input.amount;
     this.keys.set(input.idempotencyKey, refund);
-    return refund;
+    return structuredClone(refund);
   }
 }
 export function validateTwinUrl(base: string, key: string) {

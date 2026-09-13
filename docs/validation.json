@@ -1,0 +1,115 @@
+{
+  "verifiedAt": "2026-09-13T17:18:58.994Z",
+  "mode": "LOCAL FIXTURES / LIVE PROVIDERS NOT VALIDATED",
+  "unitAndIntegrationTests": {
+    "passed": 40,
+    "failed": 0
+  },
+  "coverage": {
+    "lines": {
+      "total": 783,
+      "covered": 660,
+      "skipped": 0,
+      "pct": 84.29
+    },
+    "statements": {
+      "total": 828,
+      "covered": 691,
+      "skipped": 0,
+      "pct": 83.45
+    },
+    "functions": {
+      "total": 162,
+      "covered": 139,
+      "skipped": 0,
+      "pct": 85.8
+    },
+    "branches": {
+      "total": 520,
+      "covered": 389,
+      "skipped": 0,
+      "pct": 74.8
+    },
+    "branchesTrue": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": 100
+    }
+  },
+  "scenarioMetrics": {
+    "scenarios": 10,
+    "correct": 10,
+    "falseReproductionRate": 0,
+    "reproductionRate": 1,
+    "criticalFingerprintAccuracy": 1,
+    "safeUnresolved": 2,
+    "averageAttempts": 2,
+    "evidencePrecision": 1,
+    "ablationSensitivity": 1,
+    "regressionTestValidity": 1
+  },
+  "seededFinancialSweep": {
+    "seed": 20260913,
+    "mode": "LOCAL SIMULATION",
+    "count": 200,
+    "passed": 200,
+    "falsePositives": 0,
+    "negativeCases": 100,
+    "zeroFailureUpperBound95": 0.029513049607039932,
+    "p50Ms": 4.82,
+    "p95Ms": 7.86,
+    "elapsedMs": 1098,
+    "note": "Seeded synthetic coverage; this does not estimate production incidence or live provider reliability. One-sided exact binomial bound is conditional on these sampled scenarios."
+  },
+  "restart": {
+    "passed": true,
+    "checks": [
+      "queued work survives worker restart",
+      "two attempts and capsule survive worker exit",
+      "expired running job becomes interrupted without replay"
+    ],
+    "verifiedAt": "2026-09-13T17:15:50.170Z"
+  },
+  "browser": {
+    "passed": 3,
+    "failed": 0,
+    "scope": "UI/API/worker/database workflow, request validation, mobile layout"
+  },
+  "container": {
+    "passed": true,
+    "node": "v22.23.2",
+    "authenticated": true,
+    "anonymousStatus": 401,
+    "attempts": 2,
+    "fixVerified": true,
+    "regressionValid": true,
+    "receipts": [
+      {
+        "provider": "Userlens",
+        "status": "NOT CONNECTED"
+      },
+      {
+        "provider": "Lemma",
+        "status": "NOT CONNECTED"
+      },
+      {
+        "provider": "Userlens",
+        "status": "NOT CONNECTED"
+      },
+      {
+        "provider": "Lemma",
+        "status": "NOT CONNECTED"
+      }
+    ],
+    "verifiedAt": "2026-09-13T17:18:58.994Z"
+  },
+  "demo": {
+    "file": "demo/recur-demo.mp4",
+    "durationSeconds": 120,
+    "width": 1920,
+    "height": 1080,
+    "sha256": "2327570ed5f477ecf8bb8daa66a7f6c892f62a5d7c891cb65bbf0b46412034e2"
+  },
+  "serviceSourceSHA256": "090c325cd6504efd12bc2841174f2b78bd9bfb579951052cfb9289a814dd162d"
+}

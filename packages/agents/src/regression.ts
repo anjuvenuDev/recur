@@ -63,8 +63,10 @@ export async function generateRegression(capsule: Capsule) {
         [
           resolve(root, "node_modules/vitest/vitest.mjs"),
           "run",
+          "--configLoader",
+          "native",
           "--config",
-          resolve(root, "vitest.regression.config.ts"),
+          resolve(root, "vitest.regression.config.mjs"),
           file,
           "--reporter=json",
           `--outputFile=${reportFile}`,

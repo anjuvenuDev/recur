@@ -1,0 +1,39 @@
+1
+00:00:00,000 --> 00:00:13,800
+RECUR • Reconstruct the state behind a failure.
+Local fixture demo — real service and test executions.
+
+2
+00:00:14,000 --> 00:00:24,800
+A $100 charge. A $40 prior refund. A flag-dependent bug.
+Recur rebuilds the conditions and executes the request.
+
+3
+00:00:25,000 --> 00:00:39,800
+First replay: mismatch. Observed flag restored: exact failure.
+A model cannot override the deterministic verdict.
+
+4
+00:00:40,000 --> 00:00:54,800
+Export the Reproduction Capsule.
+Request, state, source hash, evidence, and expected failure.
+
+5
+00:00:55,000 --> 00:01:23,800
+Prove the fix: exactly one $60 refund.
+The actual regression fails buggy code and passes fixed code.
+
+6
+00:01:24,000 --> 00:01:38,800
+Remove each causal condition.
+Four ablations prevent the target failure.
+
+7
+00:01:39,000 --> 00:01:51,800
+Ten scenario checks. Missing evidence fails closed.
+Separate gates test restarts, tampering, and 200 financial states.
+
+8
+00:01:52,000 --> 00:02:00,000
+From a one-off incident to an executable regression.
+Capture the conditions. Recreate the bug. Prove the fix.

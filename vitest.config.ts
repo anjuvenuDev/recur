@@ -14,7 +14,7 @@ export default defineConfig({
         "apps/demo-service/src/**/*.ts",
       ],
       exclude: ["**/*.test.ts", "**/server.ts"],
-      thresholds: { lines: 70, statements: 70, functions: 65, branches: 60 },
+      thresholds: { lines: 80, statements: 80, functions: 80, branches: 70 },
     },
     env: {
       OPENAI_API_KEY: "",

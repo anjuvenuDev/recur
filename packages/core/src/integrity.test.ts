@@ -56,3 +56,8 @@ it("rejects duplicate provider refund identities and impossible amounts", () => 
   state.charge.amount_refunded = 8000;
   expect(StripeStateSchema.safeParse(state).success).toBe(false);
 });
+
+it("rejects capsule identifiers that could escape artifact directories", () => {
+  for (const id of ["../../outside", "/tmp/outside", "cap/file"])
+    expect(() => sealCapsule({ ...capsule(), id })).toThrow();
+});

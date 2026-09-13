@@ -8,3 +8,5 @@
 6. Presentation: professional README with running-agent instructions, architecture and trust boundaries, judge-ready proof artifacts, two-minute demo script and recording.
 
 Live credentials are the only intended remaining user setup. No external message sending, public publishing, or paid provisioning occurs without existing authorization and configured credentials.
+
+Implementation status and observed checks are maintained in [BUILD_CHECKLIST.md](BUILD_CHECKLIST.md) and [VERIFICATION.md](VERIFICATION.md). The remaining external steps are account configuration, a hosted GitHub remote, and live acceptance.

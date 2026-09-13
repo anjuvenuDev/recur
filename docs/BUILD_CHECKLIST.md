@@ -25,6 +25,20 @@ These are untested external paths, not evidence of live integration. Local-mode 
 ## Deliberate scope limits
 
 - Bundled buggy/fixed implementations; no arbitrary commit checkout/execution.
-- No production ingestion, authentication platform, remote deployment, or generic environment cloning.
+- No production ingestion, multi-tenant authentication platform, or generic environment cloning. Shared-token authentication and a persistent container layout are implemented.
 - Constrained regression templates; no untrusted generated code execution.
-- Local process job ownership; interrupted runs can be retried after restart.
+- Durable job leases and transactional entity-write fencing; interrupted runs require inspection and an explicit new request.
+
+## Hardening and presentation
+
+- [x] Durable queue, idempotency, global exclusion, restart recovery, deadlines
+- [x] Capsule integrity and source hashes; unsafe artifact IDs rejected
+- [x] WAL, process-local access serialization, and contention tests
+- [x] Authentication, origin validation, bounded strict JSON
+- [x] Actual Agents SDK tests with scripted model and rejected invalid proposals
+- [x] Arga lifecycle and Userlens REST contracts; Lemma trace processor
+- [x] Browser suite, seeded financial-state sweep, coverage gates, CI workflow
+- [x] Production build and authenticated Node 22 container acceptance
+- [x] Professional README, architecture graphic, actual screenshot, captioned two-minute demo
+- [ ] Hosted GitHub repository and pushed CI run
+- [ ] Credentialed live acceptance and final connected demo take

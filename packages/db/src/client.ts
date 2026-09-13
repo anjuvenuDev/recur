@@ -1,6 +1,6 @@
 import { localClient } from "./connection";
 
-import { createClient, type InStatement } from "@libsql/client";
+import { type InStatement } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import { eq } from "drizzle-orm";
 import { resolve } from "node:path";

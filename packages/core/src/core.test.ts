@@ -135,3 +135,21 @@ it("handles concurrent refund retries without overspending or duplicate effects"
     stripe.createRefund({ ...input, idempotencyKey: "new" }),
   ).rejects.toThrow("amount");
 });
+
+it("does not expose mutable refund state through adapter return values", async () => {
+  const stripe = new FixtureStripeAdapter(heroPlan().stripeState);
+  const input = {
+    chargeId: "ch_demo_001",
+    amount: 6000,
+    idempotencyKey: "alias",
+  };
+  const refund = await stripe.createRefund(input);
+  refund.amount = 1;
+  expect((await stripe.createRefund(input)).amount).toBe(6000);
+  expect(
+    (await stripe.listRefundsForCharge(input.chargeId)).reduce(
+      (n, r) => n + r.amount,
+      0,
+    ),
+  ).toBe(10000);
+});

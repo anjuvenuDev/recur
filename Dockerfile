@@ -4,7 +4,12 @@ RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json apps/web/package.json
 COPY apps/demo-service/package.json apps/demo-service/package.json
-COPY packages/ packages/
+COPY packages/core/package.json packages/core/package.json
+COPY packages/agents/package.json packages/agents/package.json
+COPY packages/integrations/package.json packages/integrations/package.json
+COPY packages/db/package.json packages/db/package.json
+COPY packages/telemetry/package.json packages/telemetry/package.json
+COPY packages/evals/package.json packages/evals/package.json
 RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build

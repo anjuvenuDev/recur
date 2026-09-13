@@ -24,7 +24,7 @@ For command-line validation:
 ```bash
 pnpm validate
 pnpm test:e2e
-pnpm doctor
+pnpm run doctor
 ```
 
 ## Optional: enable actual OpenAI specialists
@@ -143,7 +143,7 @@ The local system and adapter contracts are testable now. OpenAI model access, Gi
 After OpenAI, GitHub, LaunchDarkly, and Arga are configured:
 
 ```bash
-pnpm doctor
+pnpm run doctor
 pnpm test:live
 ```
 

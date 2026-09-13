@@ -189,8 +189,8 @@ export const AttemptSchema = z.object({
 export const CapsuleSchema = z.object({
   version: z.literal("1"),
   integrity: z.object({ algorithm: z.literal("sha256"), digest: DigestSchema }),
-  id: z.string(),
-  incidentId: z.string(),
+  id: OpaqueIdSchema,
+  incidentId: OpaqueIdSchema,
   createdAt: z.iso.datetime(),
   code: z.object({
     repository: z.string(),
